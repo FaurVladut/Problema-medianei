@@ -1,8 +1,56 @@
-#test
+# ======== 1. Matricea grafului ========
+# 0 înseamnă că nu există muchie între noduri
+graf = [
+    [0, 2, 5, 0, 0, 0],
+    [2, 0, 1, 2, 0, 0],
+    [5, 1, 0, 3, 2, 0],
+    [0, 2, 3, 0, 1, 5],
+    [0, 0, 2, 1, 0, 2],
+    [0, 0, 0, 5, 2, 0]
+]
 
-#n noduri,  
+# ======== 2. Algoritmul Dijkstra ========
+# (fără cozi, doar liste și bucle)
+def dijkstra_simplu(graf, start):
+    n = len(graf)
+    vizitat = [False] * n           
+    dist = [999999] * n            
+    dist[start] = 0                 
+    for _ in range(n):
+        min_dist = 999999
+        u = -1
+        for i in range(n):
+            if not vizitat[i] and dist[i] < min_dist:
+                min_dist = dist[i]
+                u = i
 
-#un graf pt costuri(nu cred ca trb graf de adiacenta)
-#int n=5;
-int g[5][5]={0 1 2 3 4};
-{1 
+        if u == -1:
+            break
+
+        vizitat[u] = True
+
+        for v in range(n):
+            cost = graf[u][v]
+            if cost > 0 and not vizitat[v]:
+                if dist[u] + cost < dist[v]:
+                    dist[v] = dist[u] + cost
+
+    return dist
+
+
+# ======== 3. Calculăm suma distanțelor pentru fiecare nod ========
+n = len(graf)
+sume = []
+for i in range(n):
+    d = dijkstra_simplu(graf, i)
+    total = sum(d)
+    sume.append(total)
+    print(f"Nod {i}: distanțe = {d}, sumă = {total}")
+
+# ======== 4. Afisam nodul median ========
+min_sum = min(sume)
+nod_median = sume.index(min_sum)
+
+print("\n-----------------------------")
+print(f"Nodul median este: {nod_median}")
+print(f"Suma minimă a distanțelor: {min_sum}")

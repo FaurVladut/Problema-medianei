@@ -1,4 +1,5 @@
 # ======== 1. Matricea grafului ========
+#un algoritm djikstra pt mediana simpla
 # 0 înseamnă că nu există muchie între noduri
 graf = [
     [0, 2, 5, 0, 0, 0],

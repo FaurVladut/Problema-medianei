@@ -20,3 +20,5 @@ Calculăm toate distanțele minime (de exemplu cu algoritmul Dijkstra)
 Algoritmi euristici (Greedy)
 Metaeuristici:  algoritmi genetici.
 . 
+
+$$ f(v) = \frac{1}{1 + \sum_{u \in V} d(v, u)} $$

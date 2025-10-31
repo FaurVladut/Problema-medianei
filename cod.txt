@@ -55,3 +55,11 @@ nod_median = sume.index(min_sum)
 print("\n-----------------------------")
 print(f"Nodul median este: {nod_median}")
 print(f"Suma minimă a distanțelor: {min_sum}")
+
+
+# ======== 5.Functia de fitness ========
+def fitness(graf, nod):
+    dist = dijkstra_simplu(graf, nod)
+    cost_total = sum(d for d in dist if d < 999999)
+    return 1 / (1 + cost_total)
+

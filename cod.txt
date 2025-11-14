@@ -64,3 +64,75 @@ def fitness(graf, nod):
     cost_total = sum(d for d in dist if d < 999999)
     return 1 / (1 + cost_total)
 
+# ======= 6.Operator de selectie ========
+def selectie_turnir(populatie, marime_turnir=3):
+    competitori = random.sample(populatie, marime_turnir)
+    castigator = min(competitori, key=lambda x: x['fitness'])
+    return castigator
+
+# ======= 7.Punct de taiere ========
+def incrucisare_un_punct(parinte1, parinte2, total_noduri_graf):
+    p = len(parinte1) # Numărul de mediane (p)
+    punct_taiere = random.randint(1, p - 1)
+    copil_gene = parinte1[:punct_taiere] + parinte2[punct_taiere:]
+    copil_gene = list(set(copil_gene))
+    while len(copil_gene) < p:
+        nod_nou = random.randint(0, total_noduri_graf - 1)
+        if nod_nou not in copil_gene:
+            copil_gene.append(nod_nou)
+    
+    return sorted(copil_gene)
+
+# ======= 8.Mutatie =======
+def mutatie_vecinatate(cromozom, lista_adiacenta, rata_mutatie=0.1):
+    cromozom: lista de noduri [1, 5, 9]
+    lista_adiacenta: dict {nod: [vecini]}
+    if random.random() > rata_mutatie:
+        return cromozom
+
+    p = len(cromozom)
+    cromozom_nou = cromozom[:] # Copie
+    index_genă = random.randint(0, p - 1)
+    nod_curent = cromozom_nou[index_genă]
+    vecini = lista_adiacenta.get(nod_curent, [])
+    if vecini:
+        vecin_nou = random.choice(vecini)
+        if vecin_nou not in cromozom_nou:
+            cromozom_nou[index_genă] = vecin_nou
+            
+    return sorted(cromozom_nou)
+
+# ====== 9.Hibridizare =======
+def hibridizare_hill_climbing(cromozom, functie_fitness, lista_adiacenta):
+    solutie_curenta = cromozom[:]
+    fitness_curent = functie_fitness(solutie_curenta)
+    imbunatatit = True
+    while imbunatatit:
+        imbunatatit = False
+        
+        for i in range(len(solutie_curenta)):
+            nod_original = solutie_curenta[i]
+            vecini = lista_adiacenta.get(nod_original, [])
+            
+            for vecin in vecini:
+                if vecin in solutie_curenta: continue # Evităm duplicatele
+                solutie_test = solutie_curenta[:]
+                solutie_test[i] = vecin
+                fitness_test = functie_fitness(solutie_test)
+                if fitness_test < fitness_curent:
+                    solutie_curenta = solutie_test
+                    fitness_curent = fitness_test
+                    imbunatatit = True
+                    break # Ieșim și reluăm bucla mare cu noua soluție
+            
+            if imbunatatit: break
+            
+    return solutie_curenta, fitness_curent
+
+# ========10.Supravietuire ==========
+def supravietuire_elitism(populatie_veche, populatie_copii, marime_populatie, nr_elita=2):
+    populatie_veche.sort(key=lambda x: x['fitness'])
+    noua_generatie = [d.copy() for d in populatie_veche[:nr_elita]]
+    locuri_ramase = marime_populatie - nr_elita
+    noua_generatie.extend(populatie_copii[:locuri_ramase])
+    return noua_generatie

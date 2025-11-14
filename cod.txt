@@ -85,8 +85,6 @@ def incrucisare_un_punct(parinte1, parinte2, total_noduri_graf):
 
 # ======= 8.Mutatie =======
 def mutatie_vecinatate(cromozom, lista_adiacenta, rata_mutatie=0.1):
-    cromozom: lista de noduri [1, 5, 9]
-    lista_adiacenta: dict {nod: [vecini]}
     if random.random() > rata_mutatie:
         return cromozom
 

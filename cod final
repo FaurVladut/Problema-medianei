@@ -2,12 +2,12 @@ import math
 import random
 
 puncte_fixe = [
-    (2, 3),
-    (5, 1),
-    (1, 7),
-    (6, 4),
-    (3, 8),
-    (9, 2)
+    (2.1, 3.4), (5.2, 1.8), (1.3, 7.5), (6.4, 4.1), (3.2, 8.0),
+    (8.9, 2.4), (4.7, 5.8), (7.1, 3.3), (2.8, 6.9), (5.9, 7.2),
+    (3.6, 2.5), (4.1, 4.9), (6.8, 6.1), (7.4, 1.7), (1.9, 5.6),
+    (8.3, 4.4), (2.5, 2.1), (4.9, 6.7), (7.7, 5.2), (3.4, 7.8),
+    (5.5, 3.0), (6.2, 2.9), (8.0, 7.4), (2.0, 4.8), (3.8, 6.3),
+    (5.7, 5.0), (7.9, 3.9), (4.3, 7.1), (6.6, 8.2), (1.6, 3.7)
 ]
 
 def suma_distante(p, puncte):
@@ -30,17 +30,19 @@ def incrucisare(p1, p2):
     a = random.random()
     return (a*p1[0] + (1-a)*p2[0], a*p1[1] + (1-a)*p2[1])
 
-def mutatie(p, rata=0.2, eps=0.5):
+def mutatie(p, rata=0.3, eps=0.5):
     if random.random() > rata:
         return p
     return (p[0] + random.uniform(-eps, eps),
             p[1] + random.uniform(-eps, eps))
 
-def ga(pop_size=50, generatii=100):
+def ga(pop_size, generatii):
     pop = init_pop(pop_size)
-
+    #pop= populatia
     for g in range(generatii):
+        #se genereaza o lista goala
         copii = []
+        #generarea noii populatii
         for _ in range(pop_size):
             p1 = selectie_turnir(pop)
             p2 = selectie_turnir(pop)
@@ -55,7 +57,7 @@ def ga(pop_size=50, generatii=100):
 
         print(f"Gen {g+1}/{generatii}:")
         print(f"  Best point: {best}")
-        print(f"  Best cost: {best_cost:.4f}")
+        print(f"  Best cost: {best_cost:.40f}")
         print(f"  Best fitness: {fitness(best):.6f}")
         print(f"  Avg fitness: {avg_fitness:.6f}")
         print("------------------------------------")
@@ -63,6 +65,6 @@ def ga(pop_size=50, generatii=100):
     best_final = max(pop, key=fitness)
     return best_final, suma_distante(best_final, puncte_fixe)
 
-best, cost = ga(pop_size=50, generatii=50)
+best, cost = ga(pop_size=1000, generatii=50)
 print("\nPunct median final:", best)
 print("Suma distanțelor finală:", cost)

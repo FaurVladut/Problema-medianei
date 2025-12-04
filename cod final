@@ -1,0 +1,68 @@
+import math
+import random
+
+puncte_fixe = [
+    (2, 3),
+    (5, 1),
+    (1, 7),
+    (6, 4),
+    (3, 8),
+    (9, 2)
+]
+
+def suma_distante(p, puncte):
+    return sum(math.dist(p, q) for q in puncte)
+
+def fitness(p):
+    return 1 / (1 + suma_distante(p, puncte_fixe))
+
+def init_pop(n):
+    xs = [p[0] for p in puncte_fixe]
+    ys = [p[1] for p in puncte_fixe]
+    xmin, xmax = min(xs), max(xs)
+    ymin, ymax = min(ys), max(ys)
+    return [(random.uniform(xmin, xmax), random.uniform(ymin, ymax)) for _ in range(n)]
+
+def selectie_turnir(pop, k=3):
+    return max(random.sample(pop, k), key=fitness)
+
+def incrucisare(p1, p2):
+    a = random.random()
+    return (a*p1[0] + (1-a)*p2[0], a*p1[1] + (1-a)*p2[1])
+
+def mutatie(p, rata=0.2, eps=0.5):
+    if random.random() > rata:
+        return p
+    return (p[0] + random.uniform(-eps, eps),
+            p[1] + random.uniform(-eps, eps))
+
+def ga(pop_size=50, generatii=100):
+    pop = init_pop(pop_size)
+
+    for g in range(generatii):
+        copii = []
+        for _ in range(pop_size):
+            p1 = selectie_turnir(pop)
+            p2 = selectie_turnir(pop)
+            c = incrucisare(p1, p2)
+            c = mutatie(c)
+            copii.append(c)
+
+        pop = copii
+        best = max(pop, key=fitness)
+        best_cost = suma_distante(best, puncte_fixe)
+        avg_fitness = sum(fitness(p) for p in pop) / pop_size
+
+        print(f"Gen {g+1}/{generatii}:")
+        print(f"  Best point: {best}")
+        print(f"  Best cost: {best_cost:.4f}")
+        print(f"  Best fitness: {fitness(best):.6f}")
+        print(f"  Avg fitness: {avg_fitness:.6f}")
+        print("------------------------------------")
+
+    best_final = max(pop, key=fitness)
+    return best_final, suma_distante(best_final, puncte_fixe)
+
+best, cost = ga(pop_size=50, generatii=50)
+print("\nPunct median final:", best)
+print("Suma distanțelor finală:", cost)
